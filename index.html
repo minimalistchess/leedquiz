@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEED AP 4.0 Mock Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #quiz-container {
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .option-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option-button:hover {
+            background-color: #0056b3;
+        }
+
+        #score {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        #feedback {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #feedback p {
+            margin: 5px 0;
+        }
+
+        #reset-button {
+            display: none;
+            margin-top: 20px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>LEED AP 4.0 Mock Test</h1>
+    <div id="quiz-container">
+        <p id="question"></p>
+        <div id="options"></div>
+        <p id="score">Score: 0</p>
+        <div id="feedback"></div>
+        <button id="reset-button" onclick="resetQuiz()">Reset Quiz</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is LEED?",
+                answers: [
+                    { text: "Leadership in Energy and Environmental Design", correct: true },
+                    { text: "Local Environment Enhancement and Development", correct: false },
+                    { text: "Low Energy and Ecological Design", correct: false },
+                ],
+                reasoning: "LEED stands for Leadership in Energy and Environmental Design.",
+            },
+            // Add more questions here...
+            {
+                question: "A LEED AP is tasked with registering a Core and Shell project that has a large retail space at the ground floor and office spaces on the 2nd, 3rd, and 4th floors. How should the LEED AP proceed with the rating system selection?",
+                answers: [
+                    { text: "Register using two rating systems, LEED BD+C: Retail and LEED BD+C: Core and Shell.", correct: false },
+                    { text: "Use the 40/60 rule, based on gross floor area for each type of space.", correct: false },
+                    { text: "Choose one rating system based on which helps the project achieve the highest certification level.", correct: true },
+                    { text: "Prepare a CIR to ask which rating system is more appropriate for his project.", correct: false },
+                ],
+                reasoning: "The LEED AP should choose one rating system based on which helps the project achieve the highest certification level.",
+            },
+            {
+                question: "Which one of the following LEED terms is used for streamlining the approach to particular needs, constraints, and opportunities of different project types?",
+                answers: [
+                    { text: "Credit interpretation rulings (CIRS)", correct: false },
+                    { text: "Addenda", correct: false },
+                    { text: "Adaptations", correct: false },
+                    { text: "Alternative compliance paths (ACPs)", correct: true },
+                ],
+                reasoning: "Alternative compliance paths (ACPs) are used for streamlining the approach to different project types.",
+            },
+            {
+                question: "A project team needs clarification for a unique project condition for a credit and a prerequisite that are unrelated. Which one of the following actions should the team take?",
+                answers: [
+                    { text: "Submit one CIR for both the credit and prerequisite questions.", correct: false },
+                    { text: "Submit one CIR for the credit and another CIR for the prerequisite.", correct: true },
+                    { text: "Submit one CIR for the prerequisite and do not pursue the credit.", correct: false },
+                    { text: "Submit one CIR for the credit and wait for design review comments for the prerequisite.", correct: false },
+                ],
+                reasoning: "The team should submit one CIR for the credit and another CIR for the prerequisite when the questions are unrelated.",
+            },
+            {
+                question: "What must be done to comply with IP Prerequisite-Integrative Project Planning and Design for a Healthcare project?",
+                answers: [
+                    { text: "A minimum 4-hour integrative design charrette must be conducted.", correct: false },
+                    { text: "This prerequisite must be started before the schematic design phase begins.", correct: false },
+                    { text: "At least three team members, including the owner or owner's representative, must be included on the integrated project team.", correct: true },
+                    { text: "A commissioning agent (CXA) must be included on the integrated project team.", correct: false },
+                    { text: "A basis of design (BOD) document must be prepared.", correct: true },
+                ],
+                reasoning: "For compliance with IP Prerequisite-Integrative Project Planning and Design for a Healthcare project, at least three team members, including the owner or owner's representative, must be included on the integrated project team, and a basis of design (BOD) document must be prepared.",
+            },
+            {
+                question: "A project team for a healthcare facility has completed an integrative design charrette and is preparing documents for design review. What should the team submit to document IP Prerequisite Integrative Project Planning and Design?",
+                answers: [
+                    { text: "A narrative explaining how the health mission statement addresses the credit requirements and a plan of action.", correct: false },
+                    { text: "Findings from water and energy analyses.", correct: false },
+                    { text: "A simple box energy modeling analysis.", correct: false },
+                    { text: "Meeting minutes as documented proof that the budget, schedule, and functional programmatic requirements, health mission statement, credits to target, and the LEED certification level were discussed.", correct: true },
+                ],
+                reasoning: "To document IP Prerequisite Integrative Project Planning and Design, the team should submit meeting minutes as documented proof of various discussions and requirements.",
+            },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let round = 1;
+        let incorrectAnswers = [];
+
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const scoreElement = document.getElementById("score");
+        const feedbackElement = document.getElementById("feedback");
+        const resetButton = document.getElementById("reset-button");
+
+        function loadQuestion(index) {
+            const question = questions[index];
+            questionElement.textContent = question.question;
+            optionsElement.innerHTML = "";
+
+            question.answers.forEach((answer) => {
+                const optionElement = document.createElement("button");
+                optionElement.textContent = answer.text;
+                optionElement.className = "option-button";
+                optionElement.onclick = () => checkAnswer(index, answer);
+
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function checkAnswer(index, selectedAnswer) {
+            const question = questions[index];
+            const correctAnswers = question.answers.filter(answer => answer.correct);
+
+            if (correctAnswers.some(answer => answer.text === selectedAnswer.text)) {
+                score++;
+            } else {
+                // Record incorrect answer and reasoning
+                incorrectAnswers.push({ question: question.question, selectedAnswer: selectedAnswer.text, correctAnswer: correctAnswers[0].text, reasoning: question.reasoning });
+            }
+
+            scoreElement.textContent = `Score: ${score}`;
+
+            // Move to the next question or end the round
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Round is over
+                displayFeedback();
+                if (round < 10) {
+                    round++;
+                    currentQuestionIndex = 0;
+                    shuffleQuestions();
+                    loadQuestion(currentQuestionIndex);
+                } else {
+                    // Quiz is finished
+                    questionElement.textContent = "Mock Test Finished!";
+                    optionsElement.innerHTML = "";
+                    resetButton.style.display = "block"; // Show the reset button
+                }
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            round = 1;
+            incorrectAnswers = [];
+            scoreElement.textContent = "Score: 0";
+            feedbackElement.innerHTML = "";
+            resetButton.style.display = "none"; // Hide the reset button
+            shuffleQuestions();
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function shuffleQuestions() {
+            questions.sort(() => Math.random() - 0.5);
+        }
+
+        function displayFeedback() {
+            feedbackElement.innerHTML = `<p>Total Score: ${score}</p>`;
+            if (incorrectAnswers.length > 0) {
+                feedbackElement.innerHTML += "<p>Questions answered incorrectly:</p>";
+                incorrectAnswers.forEach((incorrect) => {
+                    feedbackElement.innerHTML += `<p><strong>Q: ${incorrect.question}</strong></p>`;
+                    feedbackElement.innerHTML += `<p>Your Answer: ${incorrect.selectedAnswer}</p>`;
+                    feedbackElement.innerHTML += `<p>Correct Answer: ${incorrect.correctAnswer}</p>`;
+                    feedbackElement.innerHTML += `<p>Reasoning: ${incorrect.reasoning}</p>`;
+                });
+            }
+        }
+
+        shuffleQuestions();
+        loadQuestion(currentQuestionIndex);
+    </script>
+</body>
+</html>
