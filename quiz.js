@@ -1,3 +1,5 @@
+// Shuffle function to randomize question order.
+// Rest of your quiz code...
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
