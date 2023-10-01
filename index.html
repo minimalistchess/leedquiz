@@ -3,86 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>LEED AP Quiz 😏</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f3f3;
-            margin: 0;
-            padding: 0;
-        }
-
-        #quiz-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        #quiz-container h1 {
-            text-align: center;
-            color: #007BFF;
-        }
-
-        #question-container {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        ul li {
-            margin-bottom: 10px;
-        }
-
-        #submit-button {
-            background-color: #007BFF;
-            color: #fff;
-            padding: 15px 30px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            display: block;
-            margin: 0 auto;
-            font-size: 18px;
-        }
-
-        #result-container {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
-
-        #result-container h2 {
-            text-align: center;
-            color: #007BFF;
-        }
-
-        #score {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        #correct-answers p {
-            font-size: 18px;
-            color: #333;
-        }
-
-        #correct-answers p:last-child {
-            margin-bottom: 0;
-        }
-    </style>
 </head>
 <body>
     <div id="quiz-container">
@@ -91,7 +13,7 @@
         <button id="submit-button">Submit Answers</button>
         <div id="result-container">
             <h1>Your Final Results 😜</h1>
-            <p>Your Score: <span id="score">0%</span></p>
+			<p>Review:</span></p>
             <div id="correct-answers"></div>
         </div>
     </div>
