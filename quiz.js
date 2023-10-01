@@ -325,9 +325,29 @@ function displayQuestion() {
 }
 
 
+// ... Rest of your code ...
+
+function calculateScore() {
+    let correctCount = 0;
+
+    questions.forEach((question, index) => {
+        const userAnswer = userAnswers[index];
+        const isCorrect = Array.isArray(userAnswer)
+            ? arraysEqual(userAnswer, question.answer)
+            : userAnswer === question.answer;
+
+        if (isCorrect) {
+            correctCount++;
+        }
+    });
+
+    return (correctCount / questions.length) * 100;
+}
+
 function showResults() {
     resultContainer.style.display = "block";
-    scoreDisplay.textContent = ((score / questions.length) * 100).toFixed(2) + "%";
+    const percentageScore = calculateScore().toFixed(2);
+    scoreDisplay.textContent = percentageScore + "%";
 
     // Display correct answers with questions and user answers.
     questions.forEach((question, index) => {
