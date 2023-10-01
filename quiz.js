@@ -1,5 +1,4 @@
 // Shuffle function to randomize question order.
-// Rest of your quiz code...
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -288,18 +287,15 @@ const questions = [
     }
 ];
 
-
 // Shuffle the questions array to randomize question order.
 shuffleArray(questions);
 
 const questionContainer = document.getElementById("question-container");
 const submitButton = document.getElementById("submit-button");
 const resultContainer = document.getElementById("result-container");
-const scoreDisplay = document.getElementById("score");
 const correctAnswersContainer = document.getElementById("correct-answers");
 
 let currentQuestionIndex = 0;
-let score = 0;
 let userAnswers = new Array(questions.length).fill([]);
 
 function displayQuestion() {
@@ -324,84 +320,41 @@ function displayQuestion() {
     }
 }
 
-
-// ... Rest of your code ...
-
-function calculateScore() {
-    let correctCount = 0;
-
-    questions.forEach((question, index) => {
-        const userAnswer = userAnswers[index];
-        let isCorrect = false;
-
-        // Check if the user's answers match any of the correct answers.
-        if (Array.isArray(question.answer)) {
-            isCorrect = arraysEqual(userAnswer, question.answer);
-        } else {
-            isCorrect = userAnswer === question.answer;
-        }
-
-        if (isCorrect) {
-            correctCount++;
-        }
-    });
-
-    return (correctCount / questions.length) * 100;
-}
-
-
-
 function showResults() {
     resultContainer.style.display = "block";
-    const percentageScore = calculateScore().toFixed(2);
-    scoreDisplay.textContent = percentageScore + "%";
 
     // Display correct answers with questions and user answers.
     questions.forEach((question, index) => {
         const userAnswer = userAnswers[index];
-        const isCorrect = Array.isArray(userAnswer)
-            ? arraysEqual(userAnswer, question.answer)
-            : userAnswer === question.answer;
-
         const answerDisplay = document.createElement("div");
-        answerDisplay.classList.add(isCorrect ? "correct" : "incorrect");
+
+        // Check if the user's answer matches the correct answer.
+        const isCorrect = Array.isArray(userAnswer)
+          ? userAnswer.every((ans) => question.answer.includes(ans))
+          : question.answer === userAnswer;
+
+        // Apply red color to incorrect answers.
+        const userAnswerStyle = isCorrect ? "" : "color: red;";
+		// Highlight the question in bold.
+        const questionText = `<strong>${question.question}</strong>`;
+
         answerDisplay.innerHTML = `
-            <p>Question ${index + 1}:</p>
+            <p><strong>Question ${index + 1}:</strong></p>
             <p>${question.question}</p>
-            <p>Your Answer(s): ${Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer}</p>
+            <p style="${userAnswerStyle}">Your Answer(s): ${Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer}</p>
             <p>Correct Answer: ${Array.isArray(question.answer) ? question.answer.join(", ") : question.answer}</p>
         `;
         correctAnswersContainer.appendChild(answerDisplay);
     });
 }
 
-function arraysEqual(arr1, arr2) {
-    if (arr1.length !== arr2.length) return false;
-    for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) return false;
-    }
-    return true;
-}
-
-
-
 submitButton.addEventListener("click", () => {
     const selectedOptions = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]:checked`);
     const userAnswer = Array.from(selectedOptions).map(option => option.value);
-
     userAnswers[currentQuestionIndex] = userAnswer;
-
     currentQuestionIndex++;
     displayQuestion();
 });
-
-// Shuffle function to randomize question order.
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
 
 // Start the quiz.
 displayQuestion();
