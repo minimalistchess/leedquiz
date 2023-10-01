@@ -312,7 +312,7 @@ function displayQuestion() {
                 ${question.options.map((option, index) => `
                     <li>
                         <label>
-                            <input type="${question.question.includes('Select all that apply') ? 'checkbox' : 'radio'}" name="question-${currentQuestionIndex}" value="${option}">
+                            <input type="${question.question.includes('select') ? 'checkbox' : 'radio'}" name="question-${currentQuestionIndex}" value="${option}">
                             ${option}
                         </label>
                     </li>
@@ -332,7 +332,9 @@ function showResults() {
     // Display correct answers with questions and user answers.
     questions.forEach((question, index) => {
         const userAnswer = userAnswers[index];
-        const isCorrect = arraysEqual(userAnswer, question.answer);
+        const isCorrect = Array.isArray(userAnswer)
+            ? arraysEqual(userAnswer, question.answer)
+            : userAnswer === question.answer;
 
         const answerDisplay = document.createElement("div");
         answerDisplay.classList.add(isCorrect ? "correct" : "incorrect");
@@ -345,6 +347,15 @@ function showResults() {
         correctAnswersContainer.appendChild(answerDisplay);
     });
 }
+
+function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+}
+
 
 
 submitButton.addEventListener("click", () => {
