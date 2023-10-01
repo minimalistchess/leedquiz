@@ -332,9 +332,14 @@ function calculateScore() {
 
     questions.forEach((question, index) => {
         const userAnswer = userAnswers[index];
-        const isCorrect = Array.isArray(userAnswer)
-            ? arraysEqual(userAnswer, question.answer)
-            : userAnswer === question.answer;
+        let isCorrect = false;
+
+        // Check if the user's answers match any of the correct answers.
+        if (Array.isArray(question.answer)) {
+            isCorrect = arraysEqual(userAnswer, question.answer);
+        } else {
+            isCorrect = userAnswer === question.answer;
+        }
 
         if (isCorrect) {
             correctCount++;
@@ -343,6 +348,8 @@ function calculateScore() {
 
     return (correctCount / questions.length) * 100;
 }
+
+
 
 function showResults() {
     resultContainer.style.display = "block";
