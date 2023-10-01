@@ -300,7 +300,7 @@ const correctAnswersContainer = document.getElementById("correct-answers");
 
 let currentQuestionIndex = 0;
 let score = 0;
-let userAnswers = [];
+let userAnswers = new Array(questions.length).fill([]);
 
 function displayQuestion() {
     if (currentQuestionIndex < questions.length) {
@@ -312,7 +312,7 @@ function displayQuestion() {
                 ${question.options.map((option, index) => `
                     <li>
                         <label>
-                            <input type="radio" name="question-${currentQuestionIndex}" value="${option}">
+                            <input type="${question.question.includes('Select all that apply') ? 'checkbox' : 'radio'}" name="question-${currentQuestionIndex}" value="${option}">
                             ${option}
                         </label>
                     </li>
@@ -324,31 +324,37 @@ function displayQuestion() {
     }
 }
 
+
 function showResults() {
     resultContainer.style.display = "block";
     scoreDisplay.textContent = ((score / questions.length) * 100).toFixed(2) + "%";
 
-    // Display correct answers.
+    // Display correct answers with questions and user answers.
     questions.forEach((question, index) => {
         const userAnswer = userAnswers[index];
-        const isCorrect = userAnswer === question.answer;
-        const answerDisplay = document.createElement("p");
-        answerDisplay.textContent = `Question ${index + 1}: ${isCorrect ? "Correct" : "Incorrect"} - Correct Answer: ${question.answer}`;
+        const isCorrect = arraysEqual(userAnswer, question.answer);
+
+        const answerDisplay = document.createElement("div");
+        answerDisplay.classList.add(isCorrect ? "correct" : "incorrect");
+        answerDisplay.innerHTML = `
+            <p>Question ${index + 1}:</p>
+            <p>${question.question}</p>
+            <p>Your Answer(s): ${Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer}</p>
+            <p>Correct Answer: ${Array.isArray(question.answer) ? question.answer.join(", ") : question.answer}</p>
+        `;
         correctAnswersContainer.appendChild(answerDisplay);
     });
 }
 
+
 submitButton.addEventListener("click", () => {
-    const selectedOption = document.querySelector(`input[name="question-${currentQuestionIndex}"]:checked`);
-    if (selectedOption) {
-        const userAnswer = selectedOption.value;
-        userAnswers.push(userAnswer);
-        if (userAnswer === questions[currentQuestionIndex].answer) {
-            score++;
-        }
-        currentQuestionIndex++;
-        displayQuestion();
-    }
+    const selectedOptions = document.querySelectorAll(`input[name="question-${currentQuestionIndex}"]:checked`);
+    const userAnswer = Array.from(selectedOptions).map(option => option.value);
+
+    userAnswers[currentQuestionIndex] = userAnswer;
+
+    currentQuestionIndex++;
+    displayQuestion();
 });
 
 // Shuffle function to randomize question order.
